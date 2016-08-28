@@ -47,15 +47,15 @@ static bool enabled = false;
 
 
 // Returns the number of failed login attempts by the ip in the last minutes.
-unsigned long loginlog_failedattempts(uint32 ip, unsigned int minutes)
+unsigned long loginlog_failedattempts(uint32 ip, int64 seconds)
 {
 	unsigned long failures = 0;
 
 	if( !enabled )
 		return 0;
 
-	if( SQL_ERROR == SQL->Query(sql_handle, "SELECT count(*) FROM `%s` WHERE `ip` = '%s' AND `rcode` = '1' AND `time` > NOW() - INTERVAL %u MINUTE",
-		log_login_db, sockt->ip2str(ip,NULL), minutes) )// how many times failed account? in one ip.
+	if( SQL_ERROR == SQL->Query(sql_handle, "SELECT count(*) FROM `%s` WHERE `ip` = '%s' AND `rcode` = '1' AND `time` > NOW() - INTERVAL %u SECOND",
+		log_login_db, sockt->ip2str(ip,NULL), seconds) )// how many times failed account? in one ip.
 		Sql_ShowDebug(sql_handle);
 
 	if( SQL_SUCCESS == SQL->NextRow(sql_handle) )
